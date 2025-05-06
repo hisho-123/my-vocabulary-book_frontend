@@ -20,7 +20,7 @@ type Props = {
   /**
   ボタンの位置
    */
-  position?: 'left' | 'right'
+  position?: 'left' | 'center' | 'right'
   /**
   セカンドボタンの有無
    */
@@ -29,6 +29,18 @@ type Props = {
   セカンドボタンのテキスト
    */
   secondBtnContent?: string
+  /**
+  セカンドボタンの非活性状態
+   */
+  secondBtnDisabled?: boolean
+  /**
+  セカンドボタンのアイコン
+   */
+  secondBtnIcon?: string
+  /**
+  アイコン
+   */
+  icon?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,8 +49,11 @@ const props = withDefaults(defineProps<Props>(), {
   content: 'click',
   disabled: false,
   size: 'small',
+  position: 'center',
   secondBtn: false,
-  secondBtnContent: 'cancel'
+  secondBtnContent: 'cancel',
+  secondBtnDisabled: false,
+  secondBtnIcon: undefined
 })
 
 const emit = defineEmits<{
@@ -48,23 +63,27 @@ const emit = defineEmits<{
 
 const position = 'position' + props.position
 
-const firstBtnColor = props.secondBtn ? 'primary' : props.color === 'primary' ? 'primary' : 'black'
+const firstBtnColor = props.secondBtn ? props.color : props.color === 'primary' ? 'primary' : 'black'
 const variant = firstBtnColor === 'primary' ? 'elevated' : 'outlined'
 const elevation = firstBtnColor === 'primary' ? 4 : 0
 
 </script>
 
 <template>
-  <div :class="position " class="flame">
+  <div :class="['position', `position-${props.position}`]" class="flame">
     <v-btn
       v-if="secondBtn"
       class="margin"
-      color="black"
-      variant="outlined"
+      :color="firstBtnColor"
+      :variant="variant"
       :size="size"
       :elevation="elevation"
+      :disabled="secondBtnDisabled"
       @click="emit('secondClick')"
-    >{{ secondBtnContent }}</v-btn>
+    >
+      <v-icon v-if="secondBtnIcon" :icon="secondBtnIcon" class="mr-2" />
+      {{ secondBtnContent }}
+    </v-btn>
     <v-btn
       class="margin"
       :color="firstBtnColor"
@@ -73,7 +92,10 @@ const elevation = firstBtnColor === 'primary' ? 4 : 0
       :elevation="elevation"
       :disabled="disabled"
       @click="emit('firstClick')"
-    >{{ content }}</v-btn>
+    >
+      <v-icon v-if="icon" :icon="icon" class="mr-2" />
+      {{ content }}
+    </v-btn>
   </div>
 </template>
 
@@ -82,13 +104,11 @@ const elevation = firstBtnColor === 'primary' ? 4 : 0
   display: flex;
   justify-content: center;
   
-  &left {
-    display: flex;
-    justify-content: start;
+  &-left {
+    justify-content: flex-start;
   }
-  &right {
-    display: flex;
-    justify-content: end;
+  &-right {
+    justify-content: flex-end;
   }
 }
 
