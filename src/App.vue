@@ -1,20 +1,30 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Sidebar from "@/navigation/Sidebar.vue";
 import Header from "@/navigation/Header.vue";
+
+const route = useRoute();
+const isLoginPage = computed(() => route.name === 'Login');
 </script>
 <template>
-  <div class="display">
-    <div class="sidebar">
-      <Sidebar />
-    </div>
-    <div class="page">
-      <div class="header">
-        <Header />
+  <div class="display" :class="{ 'login-layout': isLoginPage }">
+    <template v-if="!isLoginPage">
+      <div class="sidebar">
+        <Sidebar />
       </div>
-      <div class="body">
-        <router-view />
+      <div class="page">
+        <div class="header">
+          <Header />
+        </div>
+        <div class="body">
+          <router-view />
+        </div>
       </div>
-    </div>
+    </template>
+    <template v-else>
+      <router-view />
+    </template>
   </div>
 </template>
 <style lang="scss">
@@ -23,6 +33,12 @@ import Header from "@/navigation/Header.vue";
   width: 100vw;
   display: flex;
   padding: 0 !important;
+
+  &.login-layout {
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+  }
 }
 .page {
   width: calc(100% - 200px);
