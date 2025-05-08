@@ -1,56 +1,139 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import type { navigateList } from "./navigation.ts";
-import { applicationName } from "./navigation.ts";
-import "material-symbols";
-import { computed } from "vue";
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { applicationName } from './navigation.ts';
 
 const route = useRoute();
-const currentUrl = computed(() => {
-  return route.path.substring(1);
-});
+const router = useRouter();
 
-// TODO: DBから単語帳をとってきてオブジェクトの配列にする
-const sidebarList: navigateList = [
-  { name: "リスト１", link: "/test" },
-  { name: "list2", link: "/yaka" },
-];
+interface VocabularyBook {
+  id: number;
+  title: string;
+}
+
+const vocabularyBooks = ref<VocabularyBook[]>([
+  { id: 1, title: '英単語帳1' },
+  { id: 2, title: '英単語帳2' },
+  { id: 3, title: '英単語帳3' },
+]);
+
+const navigateToBook = (bookId: number) => {
+  router.push(`/book/${bookId}`);
+};
+
+const navigateToHome = () => {
+  router.push('/home');
+};
+
+const isCurrentBook = (bookId: number) => {
+  return route.params.id === String(bookId);
+};
+
+const isHome = () => {
+  return route.path === '/home';
+};
+
+onMounted(() => {
+  // TODO: APIから単語帳リストを取得
+});
 </script>
+
 <template>
   <div class="sidebar">
     <div class="appName">{{ applicationName }}</div>
-    <p v-for="list in sidebarList">
-      <router-link :to="list.link" class="sidebar-list">
-        <span
-          v-if="currentUrl && list.link.includes(currentUrl)"
-          class="material-symbols-outlined fill"
-          >Label</span
-        >
-        <span v-else class="material-symbols-outlined">Label</span>
-        <div>{{ list.name }}</div>
-      </router-link>
-    </p>
+    <div class="book-list">
+      <div
+        v-for="book in vocabularyBooks"
+        :key="book.id"
+        class="book-item"
+        :class="{ 'active': isCurrentBook(book.id) }"
+        @click="navigateToBook(book.id)"
+      >
+        <span class="material-symbols-outlined" :class="{ 'fill': isCurrentBook(book.id) }">
+          menu_book
+        </span>
+        <div class="book-title">{{ book.title }}</div>
+      </div>
+    </div>
+    <div class="home-button">
+      <div
+        class="book-item"
+        :class="{ 'active': isHome() }"
+        @click="navigateToHome"
+      >
+        <span class="material-symbols-outlined" :class="{ 'fill': isHome() }">
+          home
+        </span>
+        <div class="book-title">ホーム</div>
+      </div>
+    </div>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .appName {
   height: 50px;
   font-size: 20px;
-  padding: 8px;
+  padding: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  color: #000000;
 }
+
 .sidebar {
   width: 100%;
   height: 100%;
   text-align: left;
-}
-.material-symbols-outlined {
-  padding-right: 4px;
-}
-.fill {
-  font-variation-settings: "FILL" 1;
-}
-.sidebar-list {
+  background-color: #ffffff;
+  color: #000000;
   display: flex;
-  padding: 6px;
+  flex-direction: column;
+}
+
+.book-list {
+  padding: 8px;
+  flex-grow: 1;
+}
+
+.home-button {
+  padding: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.book-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  color: #000000;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  &.active {
+    background-color: rgba(var(--v-theme-primary), 0.1);
+    color: rgb(var(--v-theme-primary));
+  }
+}
+
+.material-symbols-outlined {
+  margin-right: 12px;
+  font-size: 20px;
+  color: inherit;
+
+  &.fill {
+    font-variation-settings: "FILL" 1;
+  }
+}
+
+.book-title {
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
 }
 </style>
