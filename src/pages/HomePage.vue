@@ -28,11 +28,6 @@ const navigateToEdit = () => {
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 mb-4">{{ page.home.title }}</h1>
-      </v-col>
-    </v-row>
-    <v-row>
       <v-col cols="12" md="6">
         <v-card class="mb-4">
           <v-card-title>復習する</v-card-title>
