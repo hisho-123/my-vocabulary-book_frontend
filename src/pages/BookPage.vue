@@ -22,11 +22,13 @@ const words = ref<Word[]>([
 
 const currentIndex = ref(0);
 const currentWord = ref(words.value[0]);
+const showTranslation = ref(false);
 
 const nextWord = () => {
   if (currentIndex.value < words.value.length - 1) {
     currentIndex.value++;
     currentWord.value = words.value[currentIndex.value];
+    showTranslation.value = false;
   }
 };
 
@@ -34,6 +36,7 @@ const previousWord = () => {
   if (currentIndex.value > 0) {
     currentIndex.value--;
     currentWord.value = words.value[currentIndex.value];
+    showTranslation.value = false;
   }
 };
 
@@ -65,6 +68,7 @@ onMounted(() => {
         <WordCard
           :word="currentWord.word"
           :translation="currentWord.translation"
+          v-model:showTranslation="showTranslation"
         />
       </v-col>
     </v-row>

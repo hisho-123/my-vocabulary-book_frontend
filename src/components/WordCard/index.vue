@@ -5,13 +5,19 @@ import { component } from '@/term/component';
 interface Props {
   word: string;
   translation: string;
+  showTranslation?: boolean;
 }
 
-const props = defineProps<Props>();
-const showTranslation = ref(false);
+const props = withDefaults(defineProps<Props>(), {
+  showTranslation: false
+});
+
+const emit = defineEmits<{
+  (e: 'update:showTranslation', value: boolean): void
+}>();
 
 const toggleCard = () => {
-  showTranslation.value = !showTranslation.value;
+  emit('update:showTranslation', !props.showTranslation);
 };
 </script>
 
@@ -22,10 +28,10 @@ const toggleCard = () => {
   >
     <v-card-text class="text-center">
       <div class="text-h4 mb-4">
-        {{ showTranslation ? translation : word }}
+        {{ props.showTranslation ? translation : word }}
       </div>
       <div class="text-caption">
-        {{ showTranslation ? component.wordCard.tapToShowWord : component.wordCard.tapToShowTranslation }}
+        {{ props.showTranslation ? component.wordCard.tapToShowWord : component.wordCard.tapToShowTranslation }}
       </div>
     </v-card-text>
   </v-card>
