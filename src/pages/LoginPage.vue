@@ -3,19 +3,26 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
+import { register } from '@/api/auth';
 
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const error = ref('');
 
 const handleLogin = () => {
   // TODO: ログイン処理の実装
   router.push('/home');
 };
 
-const handleSignIn = () => {
-  // TODO: サインイン処理の実装
-  router.push('/home');
+const handleSignIn = async () => {
+  try {
+    error.value = '';
+    await register(username.value, password.value);
+    router.push('/home');
+  } catch (e) {
+    error.value = 'サインインに失敗しました。';
+  }
 };
 </script>
 
@@ -42,6 +49,13 @@ const handleSignIn = () => {
                 type="password"
                 required
               />
+              <v-alert
+                v-if="error"
+                type="error"
+                class="mt-2"
+              >
+                {{ error }}
+              </v-alert>
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-center pb-4">
