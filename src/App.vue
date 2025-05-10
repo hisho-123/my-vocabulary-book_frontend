@@ -63,7 +63,7 @@ onUnmounted(() => {
   &.login-layout {
     justify-content: center;
     align-items: center;
-    background-color: #f5f5f5;
+    background-color:rgb(100, 100, 100);
   }
 }
 

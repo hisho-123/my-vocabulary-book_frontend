@@ -66,4 +66,4 @@ const handleSignIn = () => {
 .v-card {
   border-radius: 8px;
 }
-</style> 
+</style>
