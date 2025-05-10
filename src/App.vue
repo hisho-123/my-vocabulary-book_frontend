@@ -81,6 +81,7 @@ onUnmounted(() => {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .page {
@@ -89,6 +90,7 @@ onUnmounted(() => {
   flex-direction: column;
   padding: 16px;
   transition: margin-left 0.3s ease;
+  margin-left: 200px;
 
   &.page-expanded {
     margin-left: 0;
@@ -96,6 +98,9 @@ onUnmounted(() => {
 }
 
 .sidebar {
+  position: absolute;
+  left: 0;
+  top: 0;
   background-color: #ffffff;
   height: 100%;
   width: 200px;
