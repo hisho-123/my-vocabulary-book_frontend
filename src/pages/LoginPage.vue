@@ -4,8 +4,10 @@ import { useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
 import { register } from '@/api/auth';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
+const userStore = useUserStore();
 const username = ref('');
 const password = ref('');
 const error = ref('');
@@ -18,7 +20,8 @@ const handleLogin = () => {
 const handleSignIn = async () => {
   try {
     error.value = '';
-    await register(username.value, password.value);
+    const response = await register(username.value, password.value);
+    userStore.setUser(response.userId, response.token);
     router.push('/home');
   } catch (e) {
     error.value = 'サインインに失敗しました。';

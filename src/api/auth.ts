@@ -1,4 +1,9 @@
-export const register = async (userName: string, password: string) => {
+interface RegisterResponse {
+  userId: string;
+  token: string;
+}
+
+export const register = async (userName: string, password: string): Promise<RegisterResponse> => {
   const response = await fetch('http://localhost:8080/api/register', {
     method: 'POST',
     headers: {
