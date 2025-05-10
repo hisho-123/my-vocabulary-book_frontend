@@ -7,6 +7,7 @@ import Button from '@/components/Button/index.vue';
 const route = useRoute();
 const router = useRouter();
 const bookId = Number(route.params.id);
+const bookName = ref('');
 
 interface Word {
   id: number;
@@ -44,8 +45,10 @@ const navigateToEdit = () => {
   router.push(`/list/${bookId}`);
 };
 
-onMounted(() => {
+onMounted(async () => {
   // TODO: APIから単語帳のデータを取得
+  // 仮のデータとして単語帳の名前を設定
+  bookName.value = `単語帳 ${bookId}`;
 });
 </script>
 
@@ -54,7 +57,7 @@ onMounted(() => {
     <v-row>
       <v-col cols="12">
         <div class="d-flex justify-space-between align-center mb-4">
-          <h1 class="text-h4">単語帳</h1>
+          <h1 class="text-h4">{{ bookName }}</h1>
           <Button
             color="primary"
             content="編集"
