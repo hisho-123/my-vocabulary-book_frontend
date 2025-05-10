@@ -1,24 +1,49 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import Sidebar from "@/navigation/Sidebar.vue";
 import Header from "@/navigation/Header.vue";
 
 const route = useRoute();
 const isLoginPage = computed(() => route.name === 'Login');
+const isSidebarOpen = ref(true);
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
+
+const checkScreenSize = () => {
+  isSidebarOpen.value = window.innerWidth > 510;
+};
+
+onMounted(() => {
+  checkScreenSize();
+  window.addEventListener('resize', checkScreenSize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkScreenSize);
+});
 </script>
 <template>
   <div class="display" :class="{ 'login-layout': isLoginPage }">
     <template v-if="!isLoginPage">
-      <div class="sidebar">
-        <Sidebar />
+      <div class="header">
+        <v-btn
+          icon="mdi-menu"
+          class="menu-button"
+          @click="toggleSidebar"
+        />
+        <Header />
       </div>
-      <div class="page">
-        <div class="header">
-          <Header />
+      <div class="main-content">
+        <div class="sidebar" :class="{ 'sidebar-closed': !isSidebarOpen }">
+          <Sidebar />
         </div>
-        <div class="body">
-          <router-view />
+        <div class="page" :class="{ 'page-expanded': !isSidebarOpen }">
+          <div class="body">
+            <router-view />
+          </div>
         </div>
       </div>
     </template>
@@ -32,6 +57,7 @@ const isLoginPage = computed(() => route.name === 'Login');
   height: 100vh;
   width: 100vw;
   display: flex;
+  flex-direction: column;
   padding: 0 !important;
 
   &.login-layout {
@@ -40,18 +66,48 @@ const isLoginPage = computed(() => route.name === 'Login');
     background-color: #f5f5f5;
   }
 }
+
+.header {
+  height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background-color: #000000;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
 .page {
-  width: calc(100% - 200px);
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding-left: 32px;
+  padding: 16px;
+  transition: margin-left 0.3s ease;
+
+  &.page-expanded {
+    margin-left: 0;
+  }
 }
-.header {
-  height: calc(100% / 10);
-}
+
 .sidebar {
-  background-color: aliceblue;
+  background-color: #ffffff;
   height: 100%;
   width: 200px;
+  transition: transform 0.3s ease;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+  &.sidebar-closed {
+    transform: translateX(-200px);
+  }
+}
+
+.menu-button {
+  margin-right: 16px;
 }
 </style>

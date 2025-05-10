@@ -1,20 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
+import { applicationName } from "./navigation.ts";
 
-const route = useRoute();
 const bookTitle = ref("");
-
-const title = computed(() => {
-  if (route.path === "/home") {
-    return "ホーム";
-  }
-  if (route.path.startsWith("/book/")) {
-    return bookTitle.value;
-  }
-  return route.path.substring(1);
-});
 
 onMounted(() => {
   // TODO: APIから単語帳の情報を取得
@@ -23,7 +11,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="header">{{ title }}</div>
+  <div class="header">{{ applicationName }}</div>
 </template>
 <style lang="scss" scoped>
 .header {
