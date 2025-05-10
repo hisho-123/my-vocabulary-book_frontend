@@ -24,5 +24,5 @@ const vuetify = createVuetify({
 });
 
 app.use(router);
-app.mount("#my-custom-id");
 app.use(vuetify);
+app.mount("#my-custom-id");
