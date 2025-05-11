@@ -4,9 +4,13 @@ import { applicationName } from "./navigation.ts";
 import { useUserStore } from '@/stores/user';
 import Button from '@/components/Button/index.vue';
 import { common } from '@/term';
+import { deleteUser } from '@/api/auth';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userStore = useUserStore();
 const showDeleteDialog = ref(false);
+const error = ref('');
 
 const handleDeleteClick = () => {
   showDeleteDialog.value = true;
@@ -14,11 +18,21 @@ const handleDeleteClick = () => {
 
 const handleDeleteCancel = () => {
   showDeleteDialog.value = false;
+  error.value = '';
 };
 
-const handleDeleteConfirm = () => {
-  // TODO: ユーザー削除APIの呼び出し
-  showDeleteDialog.value = false;
+const handleDeleteConfirm = async () => {
+  try {
+    error.value = '';
+    if (!userStore.token) {
+      throw new Error('Token is not available');
+    }
+    await deleteUser(userStore.token);
+    userStore.clearUser();
+    router.push('/');
+  } catch (e) {
+    error.value = 'ユーザーの削除に失敗しました。';
+  }
 };
 </script>
 <template>
@@ -34,6 +48,7 @@ const handleDeleteConfirm = () => {
       <v-dialog
         v-model="showDeleteDialog"
         max-width="400"
+        @update:model-value="(value) => !value && (error.value = '')"
       >
         <v-card>
           <v-card-title class="text-h5">
@@ -42,6 +57,13 @@ const handleDeleteConfirm = () => {
           <v-card-text>
             <p>{{ userStore.userName }}</p>
             <p class="text-caption text-red">この操作は取り消せません。</p>
+            <v-alert
+              v-if="error"
+              type="error"
+              class="mt-2"
+            >
+              {{ error }}
+            </v-alert>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -51,8 +73,8 @@ const handleDeleteConfirm = () => {
               :secondBtn="true"
               secondBtnColor="error"
               :secondBtnContent="common.buttons.cancel"
-              @firstClick="handleDeleteCancel"
-              @secondClick="handleDeleteConfirm"
+              @firstClick="handleDeleteConfirm"
+              @secondClick="handleDeleteCancel"
             />
           </v-card-actions>
         </v-card>

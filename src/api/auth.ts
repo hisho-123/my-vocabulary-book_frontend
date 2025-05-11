@@ -39,3 +39,16 @@ export const login = async (userName: string, password: string): Promise<LoginRe
 
   return response.json();
 };
+
+export const deleteUser = async (token: string): Promise<void> => {
+  const response = await fetch('http://localhost:8080/api/user-delete', {
+    method: 'DELETE',
+    headers: {
+      'Token': token,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('User deletion failed');
+  }
+};
