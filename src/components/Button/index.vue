@@ -46,7 +46,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   icon: undefined,
   color: 'primary',
-  content: 'click',
+  content: '',
   disabled: false,
   size: 'small',
   position: 'center',
@@ -74,7 +74,7 @@ const elevation = firstBtnColor === 'primary' ? 4 : 0
     <v-btn
       v-if="secondBtn"
       class="margin"
-      :color="firstBtnColor"
+      :color="white"
       :variant="variant"
       :size="size"
       :elevation="elevation"

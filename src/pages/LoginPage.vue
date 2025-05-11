@@ -16,7 +16,7 @@ const handleLogin = async () => {
   try {
     error.value = '';
     const response = await login(username.value, password.value);
-    userStore.setUser(response.userId, response.token);
+    userStore.setUser(response.userId, response.token, username.value);
     router.push('/home');
   } catch (e) {
     error.value = 'ログインに失敗しました。';
@@ -27,7 +27,7 @@ const handleSignIn = async () => {
   try {
     error.value = '';
     const response = await register(username.value, password.value);
-    userStore.setUser(response.userId, response.token);
+    userStore.setUser(response.userId, response.token, username.value);
     router.push('/home');
   } catch (e) {
     error.value = 'サインインに失敗しました。';
