@@ -3,6 +3,11 @@ interface RegisterResponse {
   token: string;
 }
 
+interface LoginResponse {
+  userId: string;
+  token: string;
+}
+
 export const register = async (userName: string, password: string): Promise<RegisterResponse> => {
   const response = await fetch('http://localhost:8080/api/register', {
     method: 'POST',
@@ -14,6 +19,22 @@ export const register = async (userName: string, password: string): Promise<Regi
 
   if (!response.ok) {
     throw new Error('Registration failed');
+  }
+
+  return response.json();
+};
+
+export const login = async (userName: string, password: string): Promise<LoginResponse> => {
+  const response = await fetch('http://localhost:8080/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userName, password }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Login failed');
   }
 
   return response.json();
