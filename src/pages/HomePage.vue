@@ -23,6 +23,10 @@ const navigateToReview = () => {
 const navigateToEdit = () => {
   router.push('/list/1');
 };
+
+const navigateToCreate = () => {
+  router.push('/create');
+};
 </script>
 
 <template>
@@ -81,6 +85,13 @@ const navigateToEdit = () => {
             </v-card>
           </v-col>
         </v-row>
+        <div class="text-center mt-4">
+          <Button
+            color="primary"
+            content="単語帳を作成"
+            @firstClick="navigateToCreate"
+          />
+        </div>
       </v-col>
     </v-row>
   </v-container>

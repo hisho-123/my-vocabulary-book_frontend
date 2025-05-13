@@ -31,6 +31,11 @@ const routes = [
     name: "Edit",
     component: EditPage,
   },
+  {
+    path: "/create",
+    name: "Create",
+    component: ListPage,
+  },
 ];
 
 const router = createRouter({
