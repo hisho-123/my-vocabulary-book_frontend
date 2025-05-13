@@ -84,6 +84,7 @@ onMounted(async () => {
           icon="mdi-chevron-right"
           :secondBtn="true"
           secondBtnContent=""
+          secondBtnColor="primary"
           :secondBtnDisabled="currentIndex === 0"
           secondBtnIcon="mdi-chevron-left"
           @firstClick="nextWord"
