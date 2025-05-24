@@ -46,6 +46,10 @@ const navigateToAdd = () => {
   router.push(`/edit/new`);
 };
 
+const handleSave = () => {
+  // TODO: Implement the logic to save the book
+};
+
 onMounted(async () => {
   try {
     const token = localStorage.getItem('token');
@@ -90,9 +94,13 @@ onMounted(async () => {
             </v-btn>
           </div>
           <Button
-            color="white"
-            :content="common.buttons.back"
-            @firstClick="navigateBack"
+            color="primary"
+            :content="common.buttons.save"
+            secondBtn
+            secondBtnColor="white"
+            :secondBtnContent="common.buttons.back"
+            @firstClick="handleSave"
+            @secondClick="navigateBack"
           />
         </div>
       </v-col>
