@@ -3,26 +3,21 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
+import { getBook } from '@/api/book';
 
 const route = useRoute();
 const router = useRouter();
 const bookId = Number(route.params.id);
 
 interface Word {
-  id: number;
   word: string;
-  translation: string;
+  translated: string;
 }
 
-const bookName = ref('単語帳1');
+const bookName = ref('');
 const isEditingBookName = ref(false);
 const editedBookName = ref('');
-
-const words = ref<Word[]>([
-  { id: 1, word: 'apple', translation: 'りんご' },
-  { id: 2, word: 'banana', translation: 'バナナ' },
-  { id: 3, word: 'orange', translation: 'オレンジ' },
-]);
+const words = ref<Word[]>([]);
 
 const startEditingBookName = () => {
   editedBookName.value = bookName.value;
@@ -51,8 +46,19 @@ const navigateToAdd = () => {
   router.push(`/edit/new`);
 };
 
-onMounted(() => {
-  // TODO: APIから単語リストのデータを取得
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+    const response = await getBook(token, bookId.toString());
+    bookName.value = response.bookName;
+    words.value = response.words;
+  } catch (error) {
+    console.error('単語の取得に失敗しました:', error);
+  }
 });
 </script>
 
