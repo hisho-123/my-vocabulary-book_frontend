@@ -10,6 +10,7 @@ const router = useRouter();
 const bookId = Number(route.params.id);
 
 interface Word {
+  id: number;
   word: string;
   translated: string;
 }
@@ -35,7 +36,10 @@ const cancelEditingBookName = () => {
 };
 
 const navigateToEdit = (wordId: number) => {
-  router.push(`/edit/${wordId}`);
+  router.push({
+    path: `/edit/${wordId}`,
+    query: { bookId: bookId.toString() }
+  });
 };
 
 const navigateBack = () => {
@@ -43,7 +47,10 @@ const navigateBack = () => {
 };
 
 const navigateToAdd = () => {
-  router.push(`/edit/new`);
+  router.push({
+    path: '/edit/new',
+    query: { bookId: bookId.toString() }
+  });
 };
 
 const handleSave = () => {
@@ -60,6 +67,7 @@ onMounted(async () => {
     const response = await getBook(token, bookId.toString());
     bookName.value = response.bookName;
     words.value = response.words;
+    console.log(words.value);
   } catch (error) {
     console.error('単語の取得に失敗しました:', error);
   }

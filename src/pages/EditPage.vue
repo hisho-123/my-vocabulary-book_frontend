@@ -22,7 +22,7 @@ const word = ref<Word>({
 
 const showDeleteDialog = ref(false);
 
-const saveWord = () => {
+const saveBook = () => {
   // TODO: APIで単語を保存
   router.push('/list/1');
 };
@@ -64,7 +64,7 @@ onMounted(() => {
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-form @submit.prevent="saveWord">
+        <v-form @submit.prevent="saveBook">
           <v-text-field
             v-model="word.word"
             :label="common.labels.word"
@@ -86,7 +86,7 @@ onMounted(() => {
           :secondBtn="true"
           :secondBtnContent="common.buttons.back"
           :secondBtnColor="white"
-          @firstClick="saveWord"
+          @firstClick="saveBook"
           @secondClick="navigateBack"
         />
       </v-col>
