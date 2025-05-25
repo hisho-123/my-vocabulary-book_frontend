@@ -30,5 +30,8 @@ export const page = {
   },
   edit: {
     title: '単語の編集'
+  },
+  create: {
+    title: '単語帳を作成する'
   }
 } as const;
