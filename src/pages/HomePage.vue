@@ -33,7 +33,7 @@ const navigateToCreate = () => {
   <v-container>
     <v-row>
       <v-col cols="12" md="6">
-        <v-card class="mb-4">
+        <v-card class="mb-4" style>
           <v-card-title>{{ page.home.review.title }}</v-card-title>
           <v-card-text>
             <p>{{ page.home.review.description }}</p>
@@ -42,6 +42,7 @@ const navigateToCreate = () => {
             <Button
               color="primary"
               :content="common.buttons.startReview"
+              :disabled=true
               @firstClick="navigateToReview"
             />
           </v-card-actions>
@@ -57,6 +58,7 @@ const navigateToCreate = () => {
             <Button
               color="primary"
               :content="common.buttons.startEdit"
+              :disabled=true
               @firstClick="navigateToEdit"
             />
           </v-card-actions>
@@ -65,29 +67,10 @@ const navigateToCreate = () => {
     </v-row>
     <v-row>
       <v-col cols="12">
-        <h2 class="text-h5 mb-4">{{ page.home.bookList.title }}</h2>
-        <v-row>
-          <v-col
-            v-for="book in vocabularyBooks"
-            :key="book.id"
-            cols="12"
-            sm="6"
-            md="4"
-          >
-            <v-card
-              class="mx-auto"
-              @click="navigateToBook(book.id)"
-            >
-              <v-card-title>{{ book.title }}</v-card-title>
-              <v-card-text>
-                <p>{{ page.home.bookList.description }}</p>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <div class="text-center mt-4">
+       <div class="text-center mt-4">
           <Button
             color="primary"
+            size="large"
             content="単語帳を作成"
             @firstClick="navigateToCreate"
           />
@@ -101,6 +84,7 @@ const navigateToCreate = () => {
 .v-card {
   cursor: pointer;
   transition: transform 0.2s;
+  background-color: gray;
 }
 
 .v-card:hover {
