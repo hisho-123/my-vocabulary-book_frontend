@@ -34,7 +34,7 @@ const navigateToCreate = () => {
     <v-row>
       <v-col cols="12" md="6">
         <v-card class="mb-4">
-          <v-card-title>復習する</v-card-title>
+          <v-card-title>{{ page.home.review.title }}</v-card-title>
           <v-card-text>
             <p>{{ page.home.review.description }}</p>
           </v-card-text>
@@ -49,7 +49,7 @@ const navigateToCreate = () => {
       </v-col>
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title>単語帳を編集</v-card-title>
+          <v-card-title>{{ page.home.edit.title }}</v-card-title>
           <v-card-text>
             <p>{{ page.home.edit.description }}</p>
           </v-card-text>
