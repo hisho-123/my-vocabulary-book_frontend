@@ -40,7 +40,6 @@ const startEditingBookName = () => {
 const saveBookName = () => {
   bookName.value = editedBookName.value;
   isEditingBookName.value = false;
-  // TODO: APIで単語帳名を更新
 };
 
 const cancelEditingBookName = () => {
@@ -142,6 +141,11 @@ const updateWord = () => {
 };
 
 onMounted(async () => {
+  // URLパスが/createの場合は何もしない
+  if (route.path === '/create') {
+    return;
+  }
+
   try {
     const token = localStorage.getItem('token');
     if (!token) {
