@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
-import { getBook } from '@/api/book';
+import { getBook, createBook } from '@/api/book';
 
 const route = useRoute();
 const router = useRouter();
@@ -57,8 +57,41 @@ const navigateToAdd = () => {
   });
 };
 
-const handleSave = () => {
-  // TODO: Implement the logic to save the book
+const handleSave = async () => {
+  if (route.path === '/create') {
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.error('ユーザーIDが取得できません');
+        return;
+      }
+
+      // wordIdを除外した単語リストを作成
+      const wordsWithoutId = words.value.map(({ word, translated }) => ({
+        word,
+        translated
+      }));
+
+      const response = await createBook(
+        token,
+        parseInt(userId, 10),
+        bookName.value,
+        wordsWithoutId
+      );
+
+      // 保存成功後、ホーム画面に遷移
+      router.push('/home');
+    } catch (error) {
+      console.error('単語帳の保存に失敗しました:', error);
+    }
+  }
 };
 
 const openAddDialog = () => {

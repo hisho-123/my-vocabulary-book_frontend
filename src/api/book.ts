@@ -1,11 +1,10 @@
 interface Word {
-  id: number;
   word: string;
-  meaning: string;
+  translated: string;
 }
 
 interface CreateBookRequest {
-  userId: string;
+  userId: number;
   bookName: string;
   words: Word[];
 }
@@ -24,7 +23,7 @@ interface GetBookResponse {
 
 export const createBook = async (
   token: string,
-  userId: string,
+  userId: number,
   bookName: string,
   words: Word[]
 ): Promise<CreateBookResponse> => {
