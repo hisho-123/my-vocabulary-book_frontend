@@ -21,6 +21,11 @@ interface GetBookResponse {
   }[];
 }
 
+interface BookListItem {
+  bookId: string;
+  bookName: string;
+}
+
 export const createBook = async (
   token: string,
   userId: number,
@@ -57,6 +62,21 @@ export const getBook = async (token: string, bookId: string): Promise<GetBookRes
 
   if (!response.ok) {
     throw new Error('単語帳の取得に失敗しました');
+  }
+
+  return response.json();
+};
+
+export const getBookList = async (token: string): Promise<BookListItem[]> => {
+  const response = await fetch('http://localhost:8080/api/book-list', {
+    method: 'GET',
+    headers: {
+      'Token': token,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('単語帳一覧の取得に失敗しました');
   }
 
   return response.json();
