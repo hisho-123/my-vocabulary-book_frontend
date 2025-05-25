@@ -19,6 +19,17 @@ const bookName = ref('');
 const isEditingBookName = ref(false);
 const editedBookName = ref('');
 const words = ref<Word[]>([]);
+const showAddDialog = ref(false);
+const newWord = ref({
+  word: '',
+  translation: '',
+});
+const showEditDialog = ref(false);
+const editingWord = ref<Word>({
+  id: 0,
+  word: '',
+  translated: '',
+});
 
 const startEditingBookName = () => {
   editedBookName.value = bookName.value;
@@ -35,13 +46,6 @@ const cancelEditingBookName = () => {
   isEditingBookName.value = false;
 };
 
-const navigateToEdit = (wordId: number) => {
-  router.push({
-    path: `/edit/${wordId}`,
-    query: { bookId: bookId.toString() }
-  });
-};
-
 const navigateBack = () => {
   router.push(`/book/${bookId}`);
 };
@@ -55,6 +59,52 @@ const navigateToAdd = () => {
 
 const handleSave = () => {
   // TODO: Implement the logic to save the book
+};
+
+const openAddDialog = () => {
+  newWord.value = {
+    word: '',
+    translation: '',
+  };
+  showAddDialog.value = true;
+};
+
+const closeAddDialog = () => {
+  showAddDialog.value = false;
+};
+
+const addWord = () => {
+  // TODO: APIで単語を追加
+  words.value.push({
+    id: words.value.length + 1, // 仮のID
+    word: newWord.value.word,
+    translated: newWord.value.translation,
+  });
+  closeAddDialog();
+};
+
+const openEditDialog = (word: Word) => {
+  editingWord.value = { ...word };
+  showEditDialog.value = true;
+};
+
+const closeEditDialog = () => {
+  showEditDialog.value = false;
+  editingWord.value = {
+    id: 0,
+    word: '',
+    translated: '',
+  };
+};
+
+const updateWord = () => {
+  if (!editingWord.value) return;
+  // TODO: APIで単語を更新
+  const index = words.value.findIndex(w => w.id === editingWord.value?.id);
+  if (index !== -1) {
+    words.value[index] = { ...editingWord.value };
+  }
+  closeEditDialog();
 };
 
 onMounted(async () => {
@@ -119,22 +169,89 @@ onMounted(async () => {
           <v-list-item
             v-for="word in words"
             :key="word.id"
-            @click="navigateToEdit(word.id)"
+            @click="openEditDialog(word)"
           >
             <v-list-item-title>{{ word.word }}</v-list-item-title>
-            <v-list-item-subtitle>{{ word.translation }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ word.translated }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
         <div class="text-center mt-4">
           <Button
             color="primary"
             content="単語を追加"
-            @firstClick="navigateToAdd"
+            @firstClick="openAddDialog"
           />
         </div>
       </v-col>
     </v-row>
   </v-container>
+
+  <v-dialog v-model="showAddDialog" max-width="500">
+    <v-card>
+      <v-card-title>{{ page.edit.title }}</v-card-title>
+      <v-card-text>
+        <v-form @submit.prevent="addWord">
+          <v-text-field
+            v-model="newWord.word"
+            :label="common.labels.word"
+            required
+          />
+          <v-text-field
+            v-model="newWord.translation"
+            :label="common.labels.translation"
+            required
+          />
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <Button
+          color="white"
+          :content="common.buttons.cancel"
+          @firstClick="closeAddDialog"
+        />
+        <Button
+          color="primary"
+          :content="common.buttons.save"
+          @firstClick="addWord"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- 編集用ダイアログ -->
+  <v-dialog v-model="showEditDialog" max-width="500">
+    <v-card>
+      <v-card-title>{{ page.edit.title }}</v-card-title>
+      <v-card-text>
+        <v-form @submit.prevent="updateWord">
+          <v-text-field
+            v-model="editingWord.word"
+            :label="common.labels.word"
+            required
+          />
+          <v-text-field
+            v-model="editingWord.translated"
+            :label="common.labels.translation"
+            required
+          />
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <Button
+          color="white"
+          :content="common.buttons.cancel"
+          @firstClick="closeEditDialog"
+        />
+        <Button
+          color="primary"
+          :content="common.buttons.save"
+          @firstClick="updateWord"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
