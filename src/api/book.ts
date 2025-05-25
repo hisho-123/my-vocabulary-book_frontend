@@ -81,3 +81,18 @@ export const getBookList = async (token: string): Promise<BookListItem[]> => {
 
   return response.json();
 };
+
+export const deleteBook = async (token: string, bookId: number): Promise<void> => {
+  const response = await fetch(`http://localhost:8080/api/book-delete`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Token': token,
+    },
+    body: JSON.stringify({ bookId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('単語帳の削除に失敗しました');
+  }
+};

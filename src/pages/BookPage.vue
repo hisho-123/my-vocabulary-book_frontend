@@ -3,7 +3,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import WordCard from '@/components/WordCard/index.vue';
 import Button from '@/components/Button/index.vue';
-import { getBook } from '@/api/book';
+import { getBook, deleteBook as deleteBookApi } from '@/api/book';
+import { common } from '@/term';
 
 const route = useRoute();
 const router = useRouter();
@@ -19,6 +20,7 @@ const words = ref<Word[]>([]);
 const currentIndex = ref(0);
 const currentWord = ref<Word | null>(null);
 const showTranslation = ref(false);
+const showDeleteDialog = ref(false);
 
 const nextWord = () => {
   if (currentIndex.value < words.value.length - 1) {
@@ -38,6 +40,20 @@ const previousWord = () => {
 
 const navigateToEdit = () => {
   router.push(`/list/${bookId}`);
+};
+
+const deleteBook = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+    await deleteBookApi(token, bookId);
+    router.push('/home');
+  } catch (error) {
+    console.error('単語帳の削除に失敗しました:', error);
+  }
 };
 
 onMounted(async () => {
@@ -67,8 +83,8 @@ onMounted(async () => {
           <h1 class="text-h4">{{ bookName }}</h1>
           <Button
             color="primary"
-            content="編集"
-            @firstClick="navigateToEdit"
+            :content="common.buttons.delete"
+            @firstClick="showDeleteDialog = true"
           />
         </div>
       </v-col>
@@ -107,6 +123,28 @@ onMounted(async () => {
       </v-col>
     </v-row>
   </v-container>
+
+  <v-dialog v-model="showDeleteDialog" max-width="400">
+    <v-card>
+      <v-card-title>{{ bookName }}</v-card-title>
+      <v-card-text>
+        {{ common.messages.deleteBookConfirm }}
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <Button
+          color="white"
+          :content="common.buttons.cancel"
+          @firstClick="showDeleteDialog = false"
+        />
+        <Button
+          color="primary"
+          :content="common.buttons.delete"
+          @firstClick="deleteBook"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
