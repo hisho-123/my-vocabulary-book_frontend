@@ -26,6 +26,10 @@ type Props = {
    */
   secondBtn?: boolean
   /**
+  セカンドボタンの色
+   */
+  secondBtnColor?: 'primary' | 'white'
+  /**
   セカンドボタンのテキスト
    */
   secondBtnContent?: string
@@ -46,7 +50,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   icon: undefined,
   color: 'primary',
-  content: 'click',
+  content: '',
   disabled: false,
   size: 'small',
   position: 'center',
@@ -63,9 +67,13 @@ const emit = defineEmits<{
 
 const position = 'position' + props.position
 
-const firstBtnColor = props.secondBtn ? props.color : props.color === 'primary' ? 'primary' : 'black'
+const firstBtnColor = props.color
 const variant = firstBtnColor === 'primary' ? 'elevated' : 'outlined'
 const elevation = firstBtnColor === 'primary' ? 4 : 0
+
+const secondBtnColor = props.secondBtnColor
+const secondBtnVariant = secondBtnColor === 'primary' ? 'elevated' : 'outlined'
+const secondBtnElevation = secondBtnColor === 'primary' ? 4 : 0
 
 </script>
 
@@ -74,10 +82,10 @@ const elevation = firstBtnColor === 'primary' ? 4 : 0
     <v-btn
       v-if="secondBtn"
       class="margin"
-      :color="firstBtnColor"
-      :variant="variant"
+      :color="secondBtnColor"
+      :variant="secondBtnVariant"
       :size="size"
-      :elevation="elevation"
+      :elevation="secondBtnElevation"
       :disabled="secondBtnDisabled"
       @click="emit('secondClick')"
     >

@@ -22,7 +22,7 @@ const word = ref<Word>({
 
 const showDeleteDialog = ref(false);
 
-const saveWord = () => {
+const saveBook = () => {
   // TODO: APIで単語を保存
   router.push('/list/1');
 };
@@ -54,14 +54,9 @@ onMounted(() => {
           <h1 class="text-h4">{{ page.edit.title }}</h1>
           <div>
             <Button
-              color="white"
+              color="primary"
               :content="common.buttons.delete"
               @firstClick="showDeleteDialog = true"
-            />
-            <Button
-              color="white"
-              :content="common.buttons.back"
-              @firstClick="navigateBack"
             />
           </div>
         </div>
@@ -69,7 +64,7 @@ onMounted(() => {
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-form @submit.prevent="saveWord">
+        <v-form @submit.prevent="saveBook">
           <v-text-field
             v-model="word.word"
             :label="common.labels.word"
@@ -80,12 +75,20 @@ onMounted(() => {
             :label="common.labels.translation"
             required
           />
-          <Button
-            color="primary"
-            :content="common.buttons.save"
-            @firstClick="saveWord"
-          />
         </v-form>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="d-flex justify-center">
+        <Button
+          color="primary"
+          :content="common.buttons.save"
+          :secondBtn="true"
+          :secondBtnContent="common.buttons.back"
+          :secondBtnColor="white"
+          @firstClick="saveBook"
+          @secondClick="navigateBack"
+        />
       </v-col>
     </v-row>
 

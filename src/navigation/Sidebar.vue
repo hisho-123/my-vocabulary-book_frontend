@@ -2,20 +2,17 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { applicationName } from './navigation.ts';
+import { getBookList } from '../api/book';
 
 const route = useRoute();
 const router = useRouter();
 
 interface VocabularyBook {
   id: number;
-  title: string;
+  bookName: string;
 }
 
-const vocabularyBooks = ref<VocabularyBook[]>([
-  { id: 1, title: '英単語帳1' },
-  { id: 2, title: '英単語帳2' },
-  { id: 3, title: '英単語帳3' },
-]);
+const vocabularyBooks = ref<VocabularyBook[]>([]);
 
 const navigateToBook = (bookId: number) => {
   router.push(`/book/${bookId}`);
@@ -33,8 +30,21 @@ const isHome = () => {
   return route.path === '/home';
 };
 
-onMounted(() => {
-  // TODO: APIから単語帳リストを取得
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('トークンが存在しません');
+      return;
+    }
+    const bookList = await getBookList(token);
+    vocabularyBooks.value = bookList.map(book => ({
+      id: book.bookId,
+      bookName: book.bookName
+    }));
+  } catch (error) {
+    console.error('単語帳リストの取得に失敗しました:', error);
+  }
 });
 </script>
 
@@ -49,10 +59,7 @@ onMounted(() => {
         :class="{ 'active': isCurrentBook(book.id) }"
         @click="navigateToBook(book.id)"
       >
-        <span class="material-symbols-outlined" :class="{ 'fill': isCurrentBook(book.id) }">
-          menu_book
-        </span>
-        <div class="book-title">{{ book.title }}</div>
+        <div class="book-title">{{ book.bookName }}</div>
       </div>
     </div>
     <div class="home-button">
@@ -130,7 +137,7 @@ onMounted(() => {
 }
 
 .book-title {
-  font-size: 16px;
+  font-size: 20px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

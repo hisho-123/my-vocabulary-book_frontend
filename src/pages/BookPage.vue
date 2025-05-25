@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import WordCard from '@/components/WordCard/index.vue';
 import Button from '@/components/Button/index.vue';
+import { getBook } from '@/api/book';
 
 const route = useRoute();
 const router = useRouter();
@@ -10,19 +11,13 @@ const bookId = Number(route.params.id);
 const bookName = ref('');
 
 interface Word {
-  id: number;
   word: string;
-  translation: string;
+  translated: string;
 }
 
-const words = ref<Word[]>([
-  { id: 1, word: 'apple', translation: 'りんご' },
-  { id: 2, word: 'banana', translation: 'バナナ' },
-  { id: 3, word: 'orange', translation: 'オレンジ' },
-]);
-
+const words = ref<Word[]>([]);
 const currentIndex = ref(0);
-const currentWord = ref(words.value[0]);
+const currentWord = ref<Word | null>(null);
 const showTranslation = ref(false);
 
 const nextWord = () => {
@@ -46,9 +41,21 @@ const navigateToEdit = () => {
 };
 
 onMounted(async () => {
-  // TODO: APIから単語帳のデータを取得
-  // 仮のデータとして単語帳の名前を設定
-  bookName.value = `単語帳 ${bookId}`;
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+    const response = await getBook(token, bookId.toString());
+    bookName.value = response.bookName;
+    words.value = response.words;
+    if (words.value.length > 0) {
+      currentWord.value = words.value[0];
+    }
+  } catch (error) {
+    console.error('単語の取得に失敗しました:', error);
+  }
 });
 </script>
 
@@ -69,8 +76,8 @@ onMounted(async () => {
     <v-row>
       <v-col cols="12">
         <WordCard
-          :word="currentWord.word"
-          :translation="currentWord.translation"
+          :word="currentWord?.word"
+          :translation="currentWord?.translated"
           v-model:showTranslation="showTranslation"
         />
       </v-col>
@@ -84,6 +91,7 @@ onMounted(async () => {
           icon="mdi-chevron-right"
           :secondBtn="true"
           secondBtnContent=""
+          secondBtnColor="primary"
           :secondBtnDisabled="currentIndex === 0"
           secondBtnIcon="mdi-chevron-left"
           @firstClick="nextWord"
