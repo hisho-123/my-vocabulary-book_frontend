@@ -10,7 +10,7 @@ const router = useRouter();
 const bookId = Number(route.params.id);
 
 interface Word {
-  id: number;
+  wordId: number;
   word: string;
   translated: string;
 }
@@ -21,12 +21,13 @@ const editedBookName = ref('');
 const words = ref<Word[]>([]);
 const showAddDialog = ref(false);
 const newWord = ref({
+  wordId: 0,
   word: '',
-  translation: '',
+  translated: '',
 });
 const showEditDialog = ref(false);
 const editingWord = ref<Word>({
-  id: 0,
+  wordId: 0,
   word: '',
   translated: '',
 });
@@ -63,8 +64,9 @@ const handleSave = () => {
 
 const openAddDialog = () => {
   newWord.value = {
+    wordId: 0,
     word: '',
-    translation: '',
+    translated: '',
   };
   showAddDialog.value = true;
 };
@@ -74,36 +76,68 @@ const closeAddDialog = () => {
 };
 
 const addWord = () => {
-  // TODO: APIで単語を追加
+  if (!newWord.value.word || !newWord.value.translated) return;
+
+  // 新しい単語をリストに追加
+  const newId = words.value.length > 0
+    ? Math.max(...words.value.map(w => w.wordId)) + 1
+    : 1;
+
   words.value.push({
-    id: words.value.length + 1, // 仮のID
+    wordId: newId,
     word: newWord.value.word,
-    translated: newWord.value.translation,
+    translated: newWord.value.translated,
   });
+
+  // フォームをリセットしてダイアログを閉じる
+  newWord.value = {
+    word: '',
+    translated: '',
+  };
   closeAddDialog();
 };
 
 const openEditDialog = (word: Word) => {
-  editingWord.value = { ...word };
+  // オブジェクトのディープコピーを作成
+  editingWord.value = {
+    wordId: word.wordId,
+    word: word.word,
+    translated: word.translated
+  };
   showEditDialog.value = true;
 };
 
 const closeEditDialog = () => {
   showEditDialog.value = false;
   editingWord.value = {
-    id: 0,
+    wordId: 0,
     word: '',
     translated: '',
   };
 };
 
 const updateWord = () => {
-  if (!editingWord.value) return;
-  // TODO: APIで単語を更新
-  const index = words.value.findIndex(w => w.id === editingWord.value?.id);
+  if (!editingWord.value.word || !editingWord.value.translated) return;
+
+  // 既存の単語を更新
+  const index = words.value.findIndex(w => w.wordId === editingWord.value.wordId);
+
   if (index !== -1) {
-    words.value[index] = { ...editingWord.value };
+    // 新しいオブジェクトを作成して更新
+    const updatedWord = {
+      wordId: editingWord.value.wordId,
+      word: editingWord.value.word,
+      translated: editingWord.value.translated
+    };
+
+    // 配列の更新方法を変更
+    words.value = [
+      ...words.value.slice(0, index),
+      updatedWord,
+      ...words.value.slice(index + 1)
+    ];
   }
+
   closeEditDialog();
 };
 
@@ -117,7 +151,6 @@ onMounted(async () => {
     const response = await getBook(token, bookId.toString());
     bookName.value = response.bookName;
     words.value = response.words;
-    console.log(words.value);
   } catch (error) {
     console.error('単語の取得に失敗しました:', error);
   }
@@ -168,7 +201,7 @@ onMounted(async () => {
         <v-list>
           <v-list-item
             v-for="word in words"
-            :key="word.id"
+            :key="word.wordId"
             @click="openEditDialog(word)"
           >
             <v-list-item-title>{{ word.word }}</v-list-item-title>
@@ -195,11 +228,13 @@ onMounted(async () => {
             v-model="newWord.word"
             :label="common.labels.word"
             required
+            :rules="[v => !!v || '単語を入力してください']"
           />
           <v-text-field
-            v-model="newWord.translation"
+            v-model="newWord.translated"
             :label="common.labels.translation"
             required
+            :rules="[v => !!v || '翻訳を入力してください']"
           />
         </v-form>
       </v-card-text>
@@ -229,11 +264,13 @@ onMounted(async () => {
             v-model="editingWord.word"
             :label="common.labels.word"
             required
+            :rules="[v => !!v || '単語を入力してください']"
           />
           <v-text-field
             v-model="editingWord.translated"
             :label="common.labels.translation"
             required
+            :rules="[v => !!v || '翻訳を入力してください']"
           />
         </v-form>
       </v-card-text>
