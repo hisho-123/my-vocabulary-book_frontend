@@ -71,7 +71,7 @@ const handleDeleteConfirm = async () => {
               color="primary"
               :content="common.buttons.delete"
               :secondBtn="true"
-              secondBtnColor="error"
+              secondBtnColor="red"
               :secondBtnContent="common.buttons.cancel"
               @firstClick="handleDeleteConfirm"
               @secondClick="handleDeleteCancel"

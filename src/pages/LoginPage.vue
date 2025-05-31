@@ -69,7 +69,7 @@ const handleSignIn = async () => {
           </v-card-text>
           <v-card-actions class="justify-center pb-4">
             <Button
-              color="white"
+              color="black"
               :content="common.buttons.signIn"
               @firstClick="handleSignIn"
             />

@@ -143,7 +143,7 @@ onMounted(fetchBookData);
       <v-card-actions>
         <v-spacer />
         <Button
-          color="white"
+          color="red"
           :content="common.buttons.cancel"
           @firstClick="showDeleteDialog = false"
         />

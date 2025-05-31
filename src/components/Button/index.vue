@@ -28,7 +28,7 @@ type Props = {
   /**
   セカンドボタンの色
    */
-  secondBtnColor?: 'primary' | 'white'
+  secondBtnColor?: 'primary' | 'black' | 'white' | 'red'
   /**
   セカンドボタンのテキスト
    */
