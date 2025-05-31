@@ -207,7 +207,7 @@ onMounted(async () => {
           <div v-if="!isEditingBookName" class="d-flex align-center">
             <h2 class="text-h5 mr-2">{{ bookName }}</h2>
             <v-btn icon size="small" @click="startEditingBookName">
-              <v-icon>mdi-pencil</v-icon>
+              <v-icon color="primary">mdi-pencil</v-icon>
             </v-btn>
           </div>
           <div v-else class="d-flex align-center">
@@ -282,15 +282,14 @@ onMounted(async () => {
       <v-card-actions>
         <v-spacer />
         <Button
-          color="white"
-          :content="common.buttons.cancel"
-          @firstClick="closeAddDialog"
-        />
-        <Button
           color="primary"
           :content="common.buttons.save"
+          secondBtn
+          secondBtnColor="red"
+          :secondBtnContent="common.buttons.cancel"
           @firstClick="addWord"
-        />
+          @secondClick="closeAddDialog"
+       />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -318,14 +317,13 @@ onMounted(async () => {
       <v-card-actions>
         <v-spacer />
         <Button
-          color="white"
-          :content="common.buttons.cancel"
-          @firstClick="closeEditDialog"
-        />
-        <Button
           color="primary"
           :content="common.buttons.save"
+          secondBtn
+          secondBtnColor="red"
+          :secondBtnContent="common.buttons.cancel"
           @firstClick="updateWord"
+          @secondClick="closeEditDialog"
         />
       </v-card-actions>
     </v-card>
