@@ -29,7 +29,7 @@ const handleDeleteConfirm = async () => {
     }
     await deleteUser(userStore.token);
     userStore.clearUser();
-    router.push('/');
+    router.push('/login');
   } catch (e) {
     error.value = 'ユーザーの削除に失敗しました。';
   }
