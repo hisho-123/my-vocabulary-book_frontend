@@ -8,7 +8,7 @@ export const page = {
     title: 'ホーム',
     review: {
       title: '復習する',
-      description: 'エビングハウスの忘却曲線に基づいて、復習が必要な単語を表示します。'
+      description: '復習タイミングとして最適な単語を抽出します。'
     },
     edit: {
       title: '単語帳を編集',
