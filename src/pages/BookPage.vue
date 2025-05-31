@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import WordCard from '@/components/WordCard/index.vue';
 import Button from '@/components/Button/index.vue';
@@ -8,7 +8,7 @@ import { common } from '@/term';
 
 const route = useRoute();
 const router = useRouter();
-const bookId = Number(route.params.id);
+const bookId = ref(Number(route.params.id));
 const bookName = ref('');
 
 interface Word {
@@ -39,7 +39,7 @@ const previousWord = () => {
 };
 
 const navigateToEdit = () => {
-  router.push(`/list/${bookId}`);
+  router.push(`/list/${bookId.value}`);
 };
 
 const deleteBook = async () => {
@@ -49,21 +49,21 @@ const deleteBook = async () => {
       router.push('/login');
       return;
     }
-    await deleteBookApi(token, bookId);
+    await deleteBookApi(token, bookId.value);
     router.push('/home');
   } catch (error) {
     console.error('単語帳の削除に失敗しました:', error);
   }
 };
 
-onMounted(async () => {
+const fetchBookData = async () => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
       return;
     }
-    const response = await getBook(token, bookId.toString());
+    const response = await getBook(token, bookId.value.toString());
     bookName.value = response.bookName;
     words.value = response.words;
     if (words.value.length > 0) {
@@ -72,7 +72,17 @@ onMounted(async () => {
   } catch (error) {
     console.error('単語の取得に失敗しました:', error);
   }
+};
+
+watchEffect(() => {
+  const newBookId = Number(route.params.id);
+  if (newBookId !== bookId.value) {
+    bookId.value = newBookId;
+    fetchBookData();
+  }
 });
+
+onMounted(fetchBookData);
 </script>
 
 <template>
@@ -133,7 +143,7 @@ onMounted(async () => {
       <v-card-actions>
         <v-spacer />
         <Button
-          color="white"
+          color="red"
           :content="common.buttons.cancel"
           @firstClick="showDeleteDialog = false"
         />

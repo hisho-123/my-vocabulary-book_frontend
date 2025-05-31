@@ -71,7 +71,7 @@ const navigateToCreate = () => {
           <Button
             color="primary"
             size="large"
-            content="単語帳を作成"
+            :content="page.create.title"
             @firstClick="navigateToCreate"
           />
         </div>

@@ -29,7 +29,7 @@ const handleDeleteConfirm = async () => {
     }
     await deleteUser(userStore.token);
     userStore.clearUser();
-    router.push('/');
+    router.push('/login');
   } catch (e) {
     error.value = 'ユーザーの削除に失敗しました。';
   }
@@ -71,7 +71,7 @@ const handleDeleteConfirm = async () => {
               color="primary"
               :content="common.buttons.delete"
               :secondBtn="true"
-              secondBtnColor="error"
+              secondBtnColor="red"
               :secondBtnContent="common.buttons.cancel"
               @firstClick="handleDeleteConfirm"
               @secondClick="handleDeleteCancel"

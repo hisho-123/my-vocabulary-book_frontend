@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { applicationName } from './navigation.ts';
 import { getBookList } from '../api/book';
+import { eventBus } from '@/eventBus';
 
 const route = useRoute();
 const router = useRouter();
@@ -13,6 +14,23 @@ interface VocabularyBook {
 }
 
 const vocabularyBooks = ref<VocabularyBook[]>([]);
+
+const fetchBookList = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('トークンが存在しません');
+      return;
+    }
+    const bookList = await getBookList(token);
+    vocabularyBooks.value = bookList.map(book => ({
+      id: book.bookId,
+      bookName: book.bookName
+    }));
+  } catch (error) {
+    console.error('単語帳リストの取得に失敗しました:', error);
+  }
+};
 
 const navigateToBook = (bookId: number) => {
   router.push(`/book/${bookId}`);
@@ -30,21 +48,15 @@ const isHome = () => {
   return route.path === '/home';
 };
 
-onMounted(async () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('トークンが存在しません');
-      return;
-    }
-    const bookList = await getBookList(token);
-    vocabularyBooks.value = bookList.map(book => ({
-      id: book.bookId,
-      bookName: book.bookName
-    }));
-  } catch (error) {
-    console.error('単語帳リストの取得に失敗しました:', error);
-  }
+onMounted(() => {
+  fetchBookList();
+  // 単語帳更新イベントをリッスン
+  eventBus.on('book-updated', fetchBookList);
+});
+
+onUnmounted(() => {
+  // イベントリスナーを解除
+  eventBus.off('book-updated', fetchBookList);
 });
 </script>
 

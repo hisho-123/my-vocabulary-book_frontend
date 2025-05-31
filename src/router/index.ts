@@ -7,7 +7,7 @@ import EditPage from "@/pages/EditPage.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/login",
     name: "Login",
     component: LoginPage,
   },

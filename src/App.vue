@@ -3,10 +3,12 @@ import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import Sidebar from "@/navigation/Sidebar.vue";
 import Header from "@/navigation/Header.vue";
+import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
 const isLoginPage = computed(() => route.name === 'Login');
 const isSidebarOpen = ref(true);
+const userStore = useUserStore();
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
@@ -19,6 +21,7 @@ const checkScreenSize = () => {
 onMounted(() => {
   checkScreenSize();
   window.addEventListener('resize', checkScreenSize);
+  userStore.initializeFromStorage();
 });
 
 onUnmounted(() => {

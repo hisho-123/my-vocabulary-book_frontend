@@ -46,6 +46,9 @@ export const createBook = async (
   });
 
   if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("不正な入力があります");
+    }
     throw new Error('単語帳の作成に失敗しました');
   }
 

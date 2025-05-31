@@ -12,6 +12,16 @@ const username = ref('');
 const password = ref('');
 const error = ref('');
 
+// スナックバーの状態管理
+const snackbar = ref(false);
+const errorMessage = ref('');
+
+// エラーメッセージを表示する関数
+const showError = (message: string) => {
+  errorMessage.value = message;
+  snackbar.value = true;
+};
+
 const handleLogin = async () => {
   try {
     error.value = '';
@@ -30,7 +40,11 @@ const handleSignIn = async () => {
     userStore.setUser(response.userId, response.token, username.value);
     router.push('/home');
   } catch (e) {
-    error.value = 'サインインに失敗しました。';
+    if (e instanceof Error) {
+      showError(e.message);
+    } else {
+      showError('サインインに失敗しました');
+    }
   }
 };
 </script>
@@ -58,18 +72,11 @@ const handleSignIn = async () => {
                 type="password"
                 required
               />
-              <v-alert
-                v-if="error"
-                type="error"
-                class="mt-2"
-              >
-                {{ error }}
-              </v-alert>
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-center pb-4">
             <Button
-              color="white"
+              color="black"
               :content="common.buttons.signIn"
               @firstClick="handleSignIn"
             />
@@ -83,6 +90,24 @@ const handleSignIn = async () => {
       </v-col>
     </v-row>
   </v-container>
+
+  <!-- スナックバーコンポーネント -->
+  <v-snackbar
+    v-model="snackbar"
+    color="error"
+    timeout="3000"
+  >
+    {{ errorMessage }}
+    <template v-slot:actions>
+      <v-btn
+        color="white"
+        variant="text"
+        @click="snackbar = false"
+      >
+        閉じる
+      </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <style scoped>

@@ -4,10 +4,21 @@ import { useRoute, useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
 import { getBook, createBook } from '@/api/book';
+import { eventBus } from '@/eventBus';
 
 const route = useRoute();
 const router = useRouter();
 const bookId = Number(route.params.id);
+
+// スナックバーの状態管理
+const snackbar = ref(false);
+const errorMessage = ref('');
+
+// エラーメッセージを表示する関数
+const showError = (message: string) => {
+  errorMessage.value = message;
+  snackbar.value = true;
+};
 
 interface Word {
   wordId: number;
@@ -47,7 +58,7 @@ const cancelEditingBookName = () => {
 };
 
 const navigateBack = () => {
-  router.push(`/book/${bookId}`);
+  router.push(`/home`);
 };
 
 const navigateToAdd = () => {
@@ -86,10 +97,17 @@ const handleSave = async () => {
         wordsWithoutId
       );
 
+      // 単語帳更新イベントを発火
+      eventBus.emit('book-updated');
+
       // 保存成功後、ホーム画面に遷移
       router.push('/home');
     } catch (error) {
-      console.error('単語帳の保存に失敗しました:', error);
+      if (error instanceof Error) {
+        showError(error.message);
+      } else {
+        showError('単語帳の保存に失敗しました');
+      }
     }
   }
 };
@@ -203,7 +221,7 @@ onMounted(async () => {
           <div v-if="!isEditingBookName" class="d-flex align-center">
             <h2 class="text-h5 mr-2">{{ bookName }}</h2>
             <v-btn icon size="small" @click="startEditingBookName">
-              <v-icon>mdi-pencil</v-icon>
+              <v-icon color="primary">mdi-pencil</v-icon>
             </v-btn>
           </div>
           <div v-else class="d-flex align-center">
@@ -256,6 +274,24 @@ onMounted(async () => {
     </v-row>
   </v-container>
 
+  <!-- スナックバーコンポーネント -->
+  <v-snackbar
+    v-model="snackbar"
+    color="error"
+    timeout="3000"
+  >
+    {{ errorMessage }}
+    <template v-slot:actions>
+      <v-btn
+        color="white"
+        variant="text"
+        @click="snackbar = false"
+      >
+        閉じる
+      </v-btn>
+    </template>
+  </v-snackbar>
+
   <v-dialog v-model="showAddDialog" max-width="500">
     <v-card>
       <v-card-title>{{ page.edit.title }}</v-card-title>
@@ -278,15 +314,14 @@ onMounted(async () => {
       <v-card-actions>
         <v-spacer />
         <Button
-          color="white"
-          :content="common.buttons.cancel"
-          @firstClick="closeAddDialog"
-        />
-        <Button
           color="primary"
           :content="common.buttons.save"
+          secondBtn
+          secondBtnColor="red"
+          :secondBtnContent="common.buttons.cancel"
           @firstClick="addWord"
-        />
+          @secondClick="closeAddDialog"
+       />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -314,14 +349,13 @@ onMounted(async () => {
       <v-card-actions>
         <v-spacer />
         <Button
-          color="white"
-          :content="common.buttons.cancel"
-          @firstClick="closeEditDialog"
-        />
-        <Button
           color="primary"
           :content="common.buttons.save"
+          secondBtn
+          secondBtnColor="red"
+          :secondBtnContent="common.buttons.cancel"
           @firstClick="updateWord"
+          @secondClick="closeEditDialog"
         />
       </v-card-actions>
     </v-card>
