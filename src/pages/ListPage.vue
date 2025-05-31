@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
 import { getBook, createBook } from '@/api/book';
+import { eventBus } from '@/eventBus';
 
 const route = useRoute();
 const router = useRouter();
@@ -85,6 +86,9 @@ const handleSave = async () => {
         bookName.value,
         wordsWithoutId
       );
+
+      // 単語帳更新イベントを発火
+      eventBus.emit('book-updated');
 
       // 保存成功後、ホーム画面に遷移
       router.push('/home');
