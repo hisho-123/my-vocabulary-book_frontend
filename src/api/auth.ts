@@ -18,7 +18,10 @@ export const register = async (userName: string, password: string): Promise<Regi
   });
 
   if (!response.ok) {
-    throw new Error('Registration failed');
+    if (response.status === 400) {
+      throw new Error("不正な入力があります");
+    }
+    throw new Error('ユーザー登録に失敗しました');
   }
 
   return response.json();
