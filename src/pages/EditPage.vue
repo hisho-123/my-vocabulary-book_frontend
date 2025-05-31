@@ -85,7 +85,7 @@ onMounted(() => {
           :content="common.buttons.save"
           :secondBtn="true"
           :secondBtnContent="common.buttons.back"
-          :secondBtnColor="white"
+          secondBtnColor="white"
           @firstClick="saveBook"
           @secondClick="navigateBack"
         />
@@ -101,14 +101,13 @@ onMounted(() => {
         <v-card-actions>
           <v-spacer />
           <Button
-            color="white"
-            :content="common.buttons.cancel"
-            @firstClick="showDeleteDialog = false"
-          />
-          <Button
             color="primary"
             :content="common.buttons.delete"
-            @firstClick="deleteWord"
+            secondBtn
+            secondBtnColor="white"
+            :secondBtnContent="common.buttons.cancel"
+            @secondClick="deleteWord"
+            @firstClick="showDeleteDialog = false"
           />
         </v-card-actions>
       </v-card>

@@ -65,8 +65,6 @@ const emit = defineEmits<{
   (e: 'secondClick'): void
 }>()
 
-const position = 'position' + props.position
-
 const firstBtnColor = props.color
 const variant = firstBtnColor === 'primary' ? 'elevated' : 'outlined'
 const elevation = firstBtnColor === 'primary' ? 4 : 0

@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
 
 const router = useRouter();
-const vocabularyBooks = ref([
-  { id: 1, title: '英単語帳1' },
-  { id: 2, title: '英単語帳2' },
-]);
-
-const navigateToBook = (bookId: number) => {
-  router.push(`/book/${bookId}`);
-};
 
 const navigateToReview = () => {
   // TODO: 復習する単語帳のIDを取得
@@ -33,7 +24,7 @@ const navigateToCreate = () => {
   <v-container>
     <v-row>
       <v-col cols="12" md="6">
-        <v-card class="mb-4" style>
+        <v-card class="mb-4">
           <v-card-title>{{ page.home.review.title }}</v-card-title>
           <v-card-text>
             <p>{{ page.home.review.description }}</p>

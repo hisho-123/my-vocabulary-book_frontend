@@ -38,10 +38,6 @@ const previousWord = () => {
   }
 };
 
-const navigateToEdit = () => {
-  router.push(`/list/${bookId.value}`);
-};
-
 const deleteBook = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -102,9 +98,11 @@ onMounted(fetchBookData);
     <v-row>
       <v-col cols="12">
         <WordCard
-          :word="currentWord?.word"
-          :translation="currentWord?.translated"
-          v-model:showTranslation="showTranslation"
+          v-if="currentWord"
+          :word="currentWord.word || ''"
+          :translation="currentWord.translated || ''"
+          :showTranslation="showTranslation"
+          @update:showTranslation="showTranslation = $event"
         />
       </v-col>
     </v-row>
@@ -143,14 +141,13 @@ onMounted(fetchBookData);
       <v-card-actions>
         <v-spacer />
         <Button
-          color="red"
-          :content="common.buttons.cancel"
-          @firstClick="showDeleteDialog = false"
-        />
-        <Button
           color="primary"
           :content="common.buttons.delete"
+          secondBtn
+          secondBtnColor="red"
+          :secondBtnContent="common.buttons.cancel"
           @firstClick="deleteBook"
+          @secondClick="showDeleteDialog = false"
         />
       </v-card-actions>
     </v-card>

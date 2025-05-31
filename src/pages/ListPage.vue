@@ -61,16 +61,8 @@ const navigateBack = () => {
   router.push(`/home`);
 };
 
-const navigateToAdd = () => {
-  router.push({
-    path: '/edit/new',
-    query: { bookId: bookId.toString() }
-  });
-};
-
 const handleSave = async () => {
   if (route.path === '/create') {
-
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -90,7 +82,7 @@ const handleSave = async () => {
         translated
       }));
 
-      const response = await createBook(
+      await createBook(
         token,
         parseInt(userId, 10),
         bookName.value,
@@ -123,6 +115,11 @@ const openAddDialog = () => {
 
 const closeAddDialog = () => {
   showAddDialog.value = false;
+  newWord.value = {
+    wordId: 0,
+    word: '',
+    translated: '',
+  };
 };
 
 const addWord = () => {
@@ -141,6 +138,7 @@ const addWord = () => {
 
   // フォームをリセットしてダイアログを閉じる
   newWord.value = {
+    wordId: 0,
     word: '',
     translated: '',
   };
@@ -205,7 +203,11 @@ onMounted(async () => {
     }
     const response = await getBook(token, bookId.toString());
     bookName.value = response.bookName;
-    words.value = response.words;
+    words.value = response.words.map(word => ({
+      wordId: 0, // 新規作成時は0を設定
+      word: word.word,
+      translated: word.translated
+    }));
   } catch (error) {
     console.error('単語の取得に失敗しました:', error);
   }

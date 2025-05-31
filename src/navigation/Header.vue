@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { applicationName } from "./navigation.ts";
 import { useUserStore } from '@/stores/user';
 import Button from '@/components/Button/index.vue';
@@ -42,13 +42,14 @@ const handleDeleteConfirm = async () => {
       <Button
         v-if="userStore.isAuthenticated"
         icon="mdi-delete-forever"
-        :content="userStore.userName"
+        color="primary"
+        :content="userStore.userName || ''"
         @firstClick="handleDeleteClick"
       />
       <v-dialog
         v-model="showDeleteDialog"
         max-width="400"
-        @update:model-value="(value) => !value && (error.value = '')"
+        @update:model-value="(value) => !value && (error = '')"
       >
         <v-card>
           <v-card-title class="text-h5">

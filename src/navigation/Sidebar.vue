@@ -24,7 +24,7 @@ const fetchBookList = async () => {
     }
     const bookList = await getBookList(token);
     vocabularyBooks.value = bookList.map(book => ({
-      id: book.bookId,
+      id: Number(book.bookId),
       bookName: book.bookName
     }));
   } catch (error) {
