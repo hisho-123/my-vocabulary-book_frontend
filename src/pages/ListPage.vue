@@ -48,7 +48,7 @@ const cancelEditingBookName = () => {
 };
 
 const navigateBack = () => {
-  router.push(`/book/${bookId}`);
+  router.push(`/home`);
 };
 
 const navigateToAdd = () => {
