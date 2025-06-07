@@ -61,3 +61,51 @@
 
 ### components
 - 基本の不変な機能をまとめる
+
+
+## 環境構築
+### プロジェクトのクローン
+- gitのインストール
+```
+sudo apt update & apt install git
+```
+
+- クローン
+```
+sudo git clone git@github.com:hisho-123/my-vocabulary-book_frontend.git
+```
+
+### node環境の構築
+- nvmのインストール
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+source ~/.bashrc  # または `~/.zshrc`
+```
+
+- 確認
+  - nvmのパスが通ているか
+  ```
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  ```
+  - インストールされているか
+  ```
+  nvm -v
+  ```
+
+- node, npmのインストール
+```
+nvm install --lts
+nvm use --lts
+```
+
+- 確認
+```
+node -v
+npm -v 
+```
+
+### プロジェクトの依存パッケージをインストール
+```
+npm i
+```
