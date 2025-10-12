@@ -1,3 +1,5 @@
+import { apiClient } from './config';
+
 interface RegisterResponse {
   userId: string;
   token: string;
@@ -9,49 +11,28 @@ interface LoginResponse {
 }
 
 export const register = async (userName: string, password: string): Promise<RegisterResponse> => {
-  const response = await fetch('http://localhost:8080/api/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ userName, password }),
-  });
-
-  if (!response.ok) {
-    if (response.status === 400) {
+  try {
+    return await apiClient.post('/register', { userName, password });
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('400')) {
       throw new Error("不正な入力があります");
     }
     throw new Error('ユーザー登録に失敗しました');
   }
-
-  return response.json();
 };
 
 export const login = async (userName: string, password: string): Promise<LoginResponse> => {
-  const response = await fetch('http://localhost:8080/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ userName, password }),
-  });
-
-  if (!response.ok) {
+  try {
+    return await apiClient.post('/login', { userName, password });
+  } catch (error) {
     throw new Error('Login failed');
   }
-
-  return response.json();
 };
 
 export const deleteUser = async (token: string): Promise<void> => {
-  const response = await fetch('http://localhost:8080/api/user-delete', {
-    method: 'DELETE',
-    headers: {
-      'Token': token,
-    },
-  });
-
-  if (!response.ok) {
+  try {
+    await apiClient.delete('/user-delete', undefined, token);
+  } catch (error) {
     throw new Error('User deletion failed');
   }
 };
