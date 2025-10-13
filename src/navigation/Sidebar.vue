@@ -23,6 +23,9 @@ const fetchBookList = async () => {
       return;
     }
     const bookList = await getBookList(token);
+    if (!bookList || bookList.length === 0) {
+      return;
+    }
     vocabularyBooks.value = bookList.map(book => ({
       id: Number(book.bookId),
       bookName: book.bookName
