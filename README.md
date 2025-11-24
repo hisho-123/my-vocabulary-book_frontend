@@ -76,6 +76,36 @@ sudo git clone git@github.com:hisho-123/my-vocabulary-book_frontend.git
 ```
 
 ### node環境の構築
+
+#### mac
+
+- homebrewのインストール
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+- asdfのインストール
+```
+brew install asdf
+```
+
+- asdfの設定
+```
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
+```
+
+- asdfの再起動
+```
+source ~/.zshrc
+```
+
+- nodeのインストール
+```
+asdf plugin add nodejs
+asdf install nodejs latest
+```
+
+#### windows(wsl)
 - nvmのインストール
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
