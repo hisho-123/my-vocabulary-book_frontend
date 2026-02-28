@@ -17,6 +17,7 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LoginPage,
+    meta: { hideLayout: true },
   },
   {
     path: "/home",
@@ -48,36 +49,43 @@ const routes = [
     path: "/bad-request",
     name: "BadRequest",
     component: BadRequest,
+    meta: { hideLayout: true },
   },
   {
     path: "/forbidden",
     name: "Forbidden",
     component: Forbidden,
+    meta: { hideLayout: true },
   },
   {
     path: "/not-found",
     name: "NotFound",
     component: NotFound,
+    meta: { hideLayout: true },
   },
   {
     path: "/error",
     name: "OtherError",
     component: OtherError,
+    meta: { hideLayout: true },
   },
   {
     path: "/server-error",
     name: "ServerError",
     component: ServerError,
+    meta: { hideLayout: true },
   },
   {
     path: "/unauthorized",
     name: "Unauthorized",
     component: Unauthorized,
+    meta: { hideLayout: true },
   },
   {
     path: "/unprocessable-entity",
     name: "UnprocessableEntity",
     component: UnprocessableEntity,
+    meta: { hideLayout: true },
   },
 ];
 

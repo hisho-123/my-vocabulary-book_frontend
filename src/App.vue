@@ -6,7 +6,7 @@ import Header from "@/navigation/Header.vue";
 import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
-const isLoginPage = computed(() => route.name === 'Login');
+const shouldHideLayout = computed(() => route.meta.hideLayout === true);
 const isSidebarOpen = ref(true);
 const userStore = useUserStore();
 
@@ -29,8 +29,8 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div class="display" :class="{ 'login-layout': isLoginPage }">
-    <template v-if="!isLoginPage">
+  <div class="display" :class="{ 'login-layout': shouldHideLayout }">
+    <template v-if="!shouldHideLayout">
       <div class="header">
         <v-btn
           icon="mdi-menu"
