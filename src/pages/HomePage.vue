@@ -1,9 +1,31 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
+import { checkHomeAuth } from '@/api/home';
 
 const router = useRouter();
+
+// 認証チェック処理
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/unauthorized');
+      return;
+    }
+    // バックエンドで認証確認
+    const status = await checkHomeAuth(token);
+    if (status === 401) {
+      router.push('/unauthorized');
+    } else if (status !== 200) {
+      console.error('認証チェックに失敗しました:', status);
+    }
+  } catch (error) {
+    console.error('認証チェックに失敗しました:', error);
+  }
+});
 
 const navigateToReview = () => {
   // TODO: 復習する単語帳のIDを取得
