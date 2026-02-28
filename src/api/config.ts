@@ -90,4 +90,23 @@ export const apiClient = {
       throw new Error(`API request failed: ${response.status}`);
     }
   },
+
+  // ログイン専用: エラー時に自動遷移しない
+  postForAuth: async (endpoint: string, data?: any) => {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers,
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    return response.json();
+  },
 };

@@ -23,8 +23,11 @@ export const register = async (userName: string, password: string): Promise<Regi
 
 export const login = async (userName: string, password: string): Promise<LoginResponse> => {
   try {
-    return await apiClient.post('/login', { userName, password });
+    return await apiClient.postForAuth('/login', { userName, password });
   } catch (error) {
+    if (error instanceof Error && error.message.includes('401')) {
+      throw new Error('UNAUTHORIZED');
+    }
     throw new Error('Login failed');
   }
 };

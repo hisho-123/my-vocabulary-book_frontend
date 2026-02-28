@@ -29,7 +29,11 @@ const handleLogin = async () => {
     userStore.setUser(response.userId, response.token, username.value);
     router.push('/home');
   } catch (e) {
-    error.value = 'ログインに失敗しました。';
+    if (e instanceof Error && e.message === 'UNAUTHORIZED') {
+      showError(common.errors.loginAuthFailed);
+    } else {
+      showError('ログインに失敗しました。');
+    }
   }
 };
 
