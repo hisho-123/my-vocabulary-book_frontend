@@ -8,6 +8,7 @@ export const API_BASE_URL = 'http://localhost:8080/api';
 // 共通のAPIクライアント関数
 const handleError = async (status: number) => {
   const notificationStore = useNotificationStore();
+  const router = (await import("@/router")).default;
 
   switch (status) {
     case 400:
@@ -18,11 +19,11 @@ const handleError = async (status: number) => {
       // ユーザー情報をクリアしてログイン画面へ
       const userStore = useUserStore();
       userStore.clearUser();
-      const router = (await import("@/router")).default;
       await router.push("/login");
       break;
     case 403:
-      notificationStore.showError(common.errors.forbidden.message);
+      // 不正なアクセスの場合はエラー画面に遷移
+      await router.push("/forbidden");
       break;
     case 404:
       notificationStore.showError(common.errors.notFound.message);
