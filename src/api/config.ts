@@ -1,30 +1,40 @@
 // API設定
+import { useNotificationStore } from '@/stores/notification';
+import { useUserStore } from '@/stores/user';
+import { common } from '@/term/common';
+
 export const API_BASE_URL = 'http://localhost:8080/api';
 
 // 共通のAPIクライアント関数
 const handleError = async (status: number) => {
-  const router = (await import("@/router")).default;
+  const notificationStore = useNotificationStore();
+
   switch (status) {
     case 400:
-      await router.push("/bad-request");
+      notificationStore.showError(common.errors.badRequest.message);
       break;
     case 401:
-      await router.push("/unauthorized");
+      notificationStore.showError(common.errors.unauthorized.message);
+      // ユーザー情報をクリアしてログイン画面へ
+      const userStore = useUserStore();
+      userStore.clearUser();
+      const router = (await import("@/router")).default;
+      await router.push("/login");
       break;
     case 403:
-      await router.push("/forbidden");
+      notificationStore.showError(common.errors.forbidden.message);
       break;
     case 404:
-      await router.push("/not-found");
+      notificationStore.showError(common.errors.notFound.message);
       break;
     case 422:
-      await router.push("/unprocessable-entity");
+      notificationStore.showError(common.errors.unprocessableEntity.message);
       break;
     case 500:
-      await router.push("/server-error");
+      notificationStore.showError(common.errors.serverError.message);
       break;
     default:
-      await router.push("/error");
+      notificationStore.showError(common.errors.otherError.message);
       break;
   }
 };

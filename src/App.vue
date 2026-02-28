@@ -4,11 +4,23 @@ import { useRoute } from 'vue-router';
 import Sidebar from "@/navigation/Sidebar.vue";
 import Header from "@/navigation/Header.vue";
 import { useUserStore } from '@/stores/user';
+import { useNotificationStore } from '@/stores/notification';
 
 const route = useRoute();
 const shouldHideLayout = computed(() => route.meta.hideLayout === true);
 const isSidebarOpen = ref(true);
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
+
+const getSnackbarColor = (type: string) => {
+  switch (type) {
+    case 'error': return 'error';
+    case 'success': return 'success';
+    case 'info': return 'info';
+    case 'warning': return 'warning';
+    default: return 'info';
+  }
+};
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
@@ -53,6 +65,25 @@ onUnmounted(() => {
     <template v-else>
       <router-view />
     </template>
+
+    <!-- グローバルスナックバー -->
+    <v-snackbar
+      v-model="notificationStore.visible"
+      :color="getSnackbarColor(notificationStore.type)"
+      :timeout="notificationStore.timeout"
+      location="top"
+    >
+      {{ notificationStore.message }}
+      <template v-slot:actions>
+        <v-btn
+          color="white"
+          variant="text"
+          @click="notificationStore.hide()"
+        >
+          閉じる
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 <style lang="scss">

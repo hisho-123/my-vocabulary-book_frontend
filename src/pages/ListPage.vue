@@ -5,20 +5,12 @@ import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
 import { getBook, createBook } from '@/api/book';
 import { eventBus } from '@/eventBus';
+import { useNotificationStore } from '@/stores/notification';
 
 const route = useRoute();
 const router = useRouter();
+const notificationStore = useNotificationStore();
 const bookId = Number(route.params.id);
-
-// スナックバーの状態管理
-const snackbar = ref(false);
-const errorMessage = ref('');
-
-// エラーメッセージを表示する関数
-const showError = (message: string) => {
-  errorMessage.value = message;
-  snackbar.value = true;
-};
 
 interface Word {
   wordId: number;
@@ -96,9 +88,9 @@ const handleSave = async () => {
       router.push('/home');
     } catch (error) {
       if (error instanceof Error) {
-        showError(error.message);
+        notificationStore.showError(error.message);
       } else {
-        showError('単語帳の保存に失敗しました');
+        notificationStore.showError('単語帳の保存に失敗しました');
       }
     }
   }
@@ -275,24 +267,6 @@ onMounted(async () => {
       </v-col>
     </v-row>
   </v-container>
-
-  <!-- スナックバーコンポーネント -->
-  <v-snackbar
-    v-model="snackbar"
-    color="error"
-    timeout="3000"
-  >
-    {{ errorMessage }}
-    <template v-slot:actions>
-      <v-btn
-        color="white"
-        variant="text"
-        @click="snackbar = false"
-      >
-        閉じる
-      </v-btn>
-    </template>
-  </v-snackbar>
 
   <v-dialog v-model="showAddDialog" max-width="500">
     <v-card>
