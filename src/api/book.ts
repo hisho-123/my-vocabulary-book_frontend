@@ -1,3 +1,5 @@
+import { apiClient } from './config';
+
 interface Word {
   word: string;
   translated: string;
@@ -32,70 +34,40 @@ export const createBook = async (
   bookName: string,
   words: Word[]
 ): Promise<CreateBookResponse> => {
-  const response = await fetch('http://localhost:8080/api/book', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Token': token,
-    },
-    body: JSON.stringify({
+  try {
+    return await apiClient.post('/book', {
       userId,
       bookName,
       words,
-    } as CreateBookRequest),
-  });
-
-  if (!response.ok) {
-    if (response.status === 400) {
+    } as CreateBookRequest, token);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('400')) {
       throw new Error("不正な入力があります");
     }
     throw new Error('単語帳の作成に失敗しました');
   }
-
-  return response.json();
 };
 
 export const getBook = async (token: string, bookId: string): Promise<GetBookResponse> => {
-  const response = await fetch(`http://localhost:8080/api/book?bookId=${bookId}`, {
-    method: 'GET',
-    headers: {
-      'Token': token,
-    },
-  });
-
-  if (!response.ok) {
+  try {
+    return await apiClient.get(`/book?bookId=${bookId}`, token);
+  } catch (error) {
     throw new Error('単語帳の取得に失敗しました');
   }
-
-  return response.json();
 };
 
 export const getBookList = async (token: string): Promise<BookListItem[]> => {
-  const response = await fetch('http://localhost:8080/api/book-list', {
-    method: 'GET',
-    headers: {
-      'Token': token,
-    },
-  });
-
-  if (!response.ok) {
+  try {
+    return await apiClient.get('/book-list', token);
+  } catch (error) {
     throw new Error('単語帳一覧の取得に失敗しました');
   }
-
-  return response.json();
 };
 
 export const deleteBook = async (token: string, bookId: number): Promise<void> => {
-  const response = await fetch(`http://localhost:8080/api/book-delete`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Token': token,
-    },
-    body: JSON.stringify({ bookId }),
-  });
-
-  if (!response.ok) {
+  try {
+    await apiClient.delete('/book-delete', { bookId }, token);
+  } catch (error) {
     throw new Error('単語帳の削除に失敗しました');
   }
 };

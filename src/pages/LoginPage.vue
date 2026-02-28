@@ -5,22 +5,14 @@ import { page, common } from '@/term';
 import Button from '@/components/Button/index.vue';
 import { register, login } from '@/api/auth';
 import { useUserStore } from '@/stores/user';
+import { useNotificationStore } from '@/stores/notification';
 
 const router = useRouter();
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
 const username = ref('');
 const password = ref('');
 const error = ref('');
-
-// スナックバーの状態管理
-const snackbar = ref(false);
-const errorMessage = ref('');
-
-// エラーメッセージを表示する関数
-const showError = (message: string) => {
-  errorMessage.value = message;
-  snackbar.value = true;
-};
 
 const handleLogin = async () => {
   try {
@@ -29,7 +21,11 @@ const handleLogin = async () => {
     userStore.setUser(response.userId, response.token, username.value);
     router.push('/home');
   } catch (e) {
-    error.value = 'ログインに失敗しました。';
+    if (e instanceof Error && e.message === 'UNAUTHORIZED') {
+      notificationStore.showError(common.errors.loginAuthFailed);
+    } else {
+      notificationStore.showError('ログインに失敗しました。');
+    }
   }
 };
 
@@ -41,9 +37,9 @@ const handleSignIn = async () => {
     router.push('/home');
   } catch (e) {
     if (e instanceof Error) {
-      showError(e.message);
+      notificationStore.showError(e.message);
     } else {
-      showError('サインインに失敗しました');
+      notificationStore.showError('サインインに失敗しました');
     }
   }
 };
@@ -89,24 +85,6 @@ const handleSignIn = async () => {
       </v-col>
     </v-row>
   </v-container>
-
-  <!-- スナックバーコンポーネント -->
-  <v-snackbar
-    v-model="snackbar"
-    color="error"
-    timeout="3000"
-  >
-    {{ errorMessage }}
-    <template v-slot:actions>
-      <v-btn
-        color="white"
-        variant="text"
-        @click="snackbar = false"
-      >
-        閉じる
-      </v-btn>
-    </template>
-  </v-snackbar>
 </template>
 
 <style scoped>
