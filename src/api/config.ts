@@ -3,7 +3,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { useUserStore } from '@/stores/user';
 import { common } from '@/term/common';
 
-export const API_BASE_URL = 'http://localhost:8080/api';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // 共通のAPIクライアント関数
 const handleError = async (status: number) => {
